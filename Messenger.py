@@ -66,7 +66,34 @@ class MessengerClient():
 class MessengerServer():
     def __init__(self):
         self.__HostIP = ""
-        self.__Port = 0
+        self.__Port = 5005
         self.__BufferSize = 1024
+        self.__sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.__RecMessage = ''
+        self.__conn = 0
+        self.__addr = ''
+    def InitiateServer(self):
+        Notify.Info("Starting Server.")
+        self.__sock.bind((self.__HostIP, self.__Port))
+        self.__sock.listen(1)
 
     def ConnectToServer(self):
+        self.__conn, self.__addr = self.__sock.accept()
+        print("Connection Address: {}".format(addr))
+
+    def MPL(self):
+        ##Rec
+        while True:
+            self.__RecMessage = self.__conn.recv(self.__BufferSize)
+            if not self.__RecMessage:
+                break
+
+            try:
+                if self.__RecMessage == "--LEFT--":
+                    Notify.Error("Client has left. Terminating Connection")
+                    self.__conn.close()
+                    break
+            except:
+                pass
+
+
