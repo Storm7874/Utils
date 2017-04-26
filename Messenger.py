@@ -35,6 +35,10 @@ class MessengerClient():
         Notify.Info("Connecting to '{}' ...".format(self.HostIP))
         self.sock.connect((self.HostIP, self.Port))
 
+    def GetHostIP(self):
+        self.HostIP = socket.gethostbyname(socket.gethostname())
+        Notify.Info("Host IP: {}".format(self.HostIP))
+
     def SendMessage(self):
         try:
             self.sock.send(self.message)
@@ -98,5 +102,29 @@ class MessengerServer():
                     break
             except:
                 pass
+
+def Main():
+    Local = MessengerClient()
+    Server = MessengerServer()
+
+    print("""
+    |---------------|
+    | [1] Server    |
+    | [2] Client    |
+    | [3] Exit      |
+    |---------------|
+    |     {}:{}
+    |---------------|
+    """)
+    while True:
+        menuchoice = int(input("[?]> "))
+        if menuchoice not in [1,2,3]:
+            Notify.Error("Please enter a valid selection.")
+        else:
+            break
+
+    if menuchoice == 1:
+        Notify.Info("Starting Server...")
+
 
 

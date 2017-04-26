@@ -1,6 +1,7 @@
 import os
 import time
 import platform
+import socket
 try:
     from Notify import Main
     Notify = Main()
@@ -81,6 +82,14 @@ class Main():
                     self.ClearScreen()
                 except(KeyboardInterrupt):
                     self.ClearScreen()
+
+    def GetDeviceIP(self):
+        if self.Environment == 0:
+            socket.gethostbyname(socket.gethostname())
+        else:
+            socket.gethostbyname(socket.gethostname())
+
+
 
 
 
