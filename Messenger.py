@@ -82,7 +82,7 @@ class MessengerServer():
 
     def ConnectToServer(self):
         self.__conn, self.__addr = self.__sock.accept()
-        print("Connection Address: {}".format(addr))
+        print("Connection Address: {}".format(self.__addr))
 
     def MPL(self):
         ##Rec
