@@ -16,6 +16,9 @@ try:
     from utilsv2 import Main as UtilsMain
     utils = UtilsMain()
     utils.SetDeviceEnvironment(0)
+except:
+    print("[!] Failed to import utils")
+    exit()
 import socket
 import time
 import sys
