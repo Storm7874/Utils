@@ -84,6 +84,7 @@ class Main:
                 print("OFFLINE")
                 Notify.ClearColour()
             print()
+        input()
 
 
     def AutoMode(self):
