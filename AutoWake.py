@@ -64,7 +64,7 @@ class Main:
     def ScanDevices(self):
         Notify.Info("Scanning Devices...")
         for count in range(0, len(MainDeviceList)):
-            response = os.system("ping -c 1" + MainDeviceList[count][2])
+            response = os.system("ping -c 1 " + MainDeviceList[count][2])
             if response == 0:
                 MainDeviceList[count][3] == "ONLINE"
             else:
