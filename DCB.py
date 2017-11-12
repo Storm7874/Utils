@@ -34,7 +34,7 @@ except(ImportError):
     try:
         from EmulatorGUI import GPIO
         Notify.Success("Successfully imported eGPIO modules")
-    except(ImportError):
+    #except(ImportError):
         Notify.Error("Failed to import eGPIO modules. Aborting.")
         exit()
 
