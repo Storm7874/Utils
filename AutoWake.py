@@ -1,6 +1,13 @@
 import os
 import time
 import datetime
+try:
+    from Notify import Main as NotifyMain
+    Notify = NotifyMain()
+    Notify.SetMode("C")
+except(ImportError):
+    print("Unable to import Notify, Aborting.")
+    exit()
 
 class Timer:
     def __init__(self, StartHour, EndHour, Name, Pin):
@@ -33,30 +40,59 @@ class Timer:
         self.GetNewTime()
         self.CheckIfTimerActive()
 
-MainDeviceList = [["EFSS","00:0C:76:4E:1A:D1","192.168.1.25"],
-                  ["SGPS","78:45:C4:04:9D:68","192.168.1.3"]
+MainDeviceList = [["EFSS","00:0C:76:4E:1A:D1","192.168.1.25","OFFLINE"],
+                  ["SGPS","78:45:C4:04:9D:68","192.168.1.3","OFFLINE"]
                   ]
 # [[dev_name, Mac, IP]]
-# [["EFSS","XX:XX:XX:XX:XX","XXX.XXX.XXX.XXX"],...]
+# [["EFSS","XX:XX:XX:XX:XX","XXX.XXX.XXX.XXX","OFFLINE/ONLINE"],...]
 
 class Main:
     def __init__(self):
         self.CurrentHour = 0
         self.CurrentMinute = 0
 
+    def GetNewTimeData(self):
+        self.CurrentHour = datetime.datetime.today().hour
+        self.CurrentMinute = datetime.datetime.today().minute
+
     def StartAllDevices(self):
         for count in range(0, len(MainDeviceList)):
             os.system("etherwake " + MainDeviceList[count][1])
             print("Packet Sent to: {}".format(MainDeviceList[count][1]))
+        self.MainMenu()
+
+    def ScanDevices(self):
+        Notify.Info("Scanning Devices...")
+        for count in range(0, len(MainDeviceList)):
+            response = os.system("ping -c 1" + MainDeviceList[count][2])
+            if response == 0:
+                MainDeviceList[count][3] == "ONLINE"
+            else:
+                MainDeviceList[count][3] == "OFFLINE"
 
 
     def PrintDeviceStatus(self):
-        pass
+        self.ScanDevices()
+        for count in range(0, len(MainDeviceList)):
+            print("Device: " + MainDeviceList[count][0])
+            if MainDeviceList[count][3] == "ONLINE":
+                Notify.Green()
+                print("ONLINE")
+                Notify.ClearColour()
+            elif MainDeviceList[count][3] == "OFFLINE":
+                Notify.Red()
+                print("OFFLINE")
+                Notify.ClearColour()
+            print()
+
 
     def AutoMode(self):
         pass
 
     def MainMenu(self):
+        os.system("clear")
+        self.GetNewTimeData()
+        self.ScanDevices()
         print("""
         |----------------------------------|
         | Current Time: {}:{}              |
@@ -84,6 +120,7 @@ class Main:
             self.AutoMode()
         elif menuchoice == 4:
             exit()
+        self.MainMenu()
 
 Core = Main()
 Core.MainMenu()
