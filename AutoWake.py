@@ -1,6 +1,7 @@
 import os
 import time
 import datetime
+import pyping
 try:
     from Notify import Main as NotifyMain
     Notify = NotifyMain()
@@ -48,18 +49,34 @@ MainDeviceList = [["EFSS","00:0C:76:4E:1A:D1","192.168.1.25","OFFLINE"],
 
 class Main:
     def __init__(self):
-        self.CurrentHour = 0
-        self.CurrentMinute = 0
+        self.CurrentHour = ""
+        self.CurrentMinute = ""
 
     def GetNewTimeData(self):
         self.CurrentHour = datetime.datetime.today().hour
+        if self.CurrentHour in [1,2,3,4,5,6,7,8,9,0]:
+            self.CurrentHour = "0" + str(datetime.datetime.today().hour)
+        else:
+            self.CurrentHour = str(datetime.datetime.today().hour)
         self.CurrentMinute = datetime.datetime.today().minute
+        if self.CurrentMinute in [1,2,3,4,5,6,7,8,9,0]:
+            self.CurrentMinute = "0" + str(datetime.datetime.today().minute)
+        else:
+            self.CurrentMinute = str(datetime.datetime.today().minute)
 
     def StartAllDevices(self):
         for count in range(0, len(MainDeviceList)):
             os.system("etherwake " + MainDeviceList[count][1])
             print("Packet Sent to: {}".format(MainDeviceList[count][1]))
         self.MainMenu()
+
+    def ScanDevicesII(self):
+        for count in range(0, len(MainDeviceList)):
+            Device = pyping.ping(MainDeviceList[count][2])
+            if Device.ret_code == 0:
+                MainDeviceList[count][3] == "OFFLINE"
+            else:
+                MainDeviceList[count][3] == "ONLINE"
 
     def ScanDevices(self):
         Notify.Info("Scanning Devices...")
@@ -72,7 +89,7 @@ class Main:
 
 
     def PrintDeviceStatus(self):
-        self.ScanDevices()
+        self.ScanDevicesII()
         for count in range(0, len(MainDeviceList)):
             print("Device: " + MainDeviceList[count][0])
             if MainDeviceList[count][3] == "ONLINE":
@@ -93,7 +110,7 @@ class Main:
     def MainMenu(self):
         os.system("clear")
         self.GetNewTimeData()
-        self.ScanDevices()
+        self.ScanDevicesII()
         print("""
         |----------------------------------|
         | Current Time: {}:{}              |
