@@ -11,14 +11,12 @@ except(ImportError):
     exit()
 
 class Timer:
-    def __init__(self, StartHour, EndHour, Name, Pin):
+    def __init__(self, StartHour, EndHour, Name):
         self.StartHour = StartHour
         self.EndHour = EndHour
         self.Name = Name
         self.Active = False
         self.CurrentHour = 0
-        self.TimerLoop()
-
 
     def GetNewTime(self):
         self.CurrentHour = datetime.datetime.today().hour
@@ -41,11 +39,12 @@ class Timer:
         self.GetNewTime()
         self.CheckIfTimerActive()
 
+EFSS = Timer(6,23,"EFSS")
+SGPS = Timer(6, 23, "SGPS")
+
 MainDeviceList = [["EFSS","00:0C:76:4E:1A:D1","192.168.1.25","OFFLINE"],
                   ["SGPS","78:45:C4:04:9D:68","192.168.1.3","OFFLINE"]
                   ]
-# [[dev_name, Mac, IP]]
-# [["EFSS","XX:XX:XX:XX:XX","XXX.XXX.XXX.XXX","OFFLINE/ONLINE"],...]
 
 class Main:
     def __init__(self):
@@ -96,9 +95,23 @@ class Main:
             print()
         input()
 
-
     def AutoMode(self):
-        pass
+        try:
+            while True:
+                if EFSS.IsTimerActive() == True:
+                    os.system("etherwake " + MainDeviceList[0][1])
+                    Notify.Info("Started: {}".format(MainDeviceList[0][0]))
+                else:
+                    Notify.Info("EFSS Timer Expired.")
+                if SGPS.IsTimerActive() == True:
+                    os.system("etherwake " + MainDeviceList[1][1])
+                    Notify.Info("Started: {}".format(MainDeviceList[1][0]))
+                else:
+                    Notify.Info("SGPS Timer Expired.")
+                time.sleep(10)
+        except(KeyboardInterrupt):
+            self.MainMenu()
+
 
     def MainMenu(self):
         os.system("clear")
