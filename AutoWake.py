@@ -78,6 +78,7 @@ class Main:
                 MainDeviceList[count][3] == "ONLINE"
             else:
                 MainDeviceList[count][3] == "OFFLINE"
+        print(MainDeviceList)
 
     def PrintDeviceStatus(self):
         self.ScanDevices()
