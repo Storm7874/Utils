@@ -1,7 +1,7 @@
 import os
 import time
 import datetime
-import pyping
+import subprocess as sp
 try:
     from Notify import Main as NotifyMain
     Notify = NotifyMain()
@@ -70,26 +70,17 @@ class Main:
             print("Packet Sent to: {}".format(MainDeviceList[count][1]))
         self.MainMenu()
 
-    def ScanDevicesII(self):
-        for count in range(0, len(MainDeviceList)):
-            Device = pyping.ping(MainDeviceList[count][2])
-            if Device.ret_code == 0:
-                MainDeviceList[count][3] == "OFFLINE"
-            else:
-                MainDeviceList[count][3] == "ONLINE"
-
     def ScanDevices(self):
         Notify.Info("Scanning Devices...")
         for count in range(0, len(MainDeviceList)):
-            response = os.system("ping -c 1 " + MainDeviceList[count][2])
-            if response == 0:
+            status,result = sp.getstatusoutput("ping -c1 -w2 " + MainDeviceList[count][2])
+            if status == 0:
                 MainDeviceList[count][3] == "ONLINE"
             else:
                 MainDeviceList[count][3] == "OFFLINE"
 
-
     def PrintDeviceStatus(self):
-        self.ScanDevicesII()
+        self.ScanDevices()
         for count in range(0, len(MainDeviceList)):
             print("Device: " + MainDeviceList[count][0])
             if MainDeviceList[count][3] == "ONLINE":
@@ -110,7 +101,7 @@ class Main:
     def MainMenu(self):
         os.system("clear")
         self.GetNewTimeData()
-        self.ScanDevicesII()
+        self.ScanDevices()
         print("""
         |----------------------------------|
         | Current Time: {}:{}              |
