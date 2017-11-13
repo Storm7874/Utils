@@ -75,9 +75,9 @@ class Main:
         for count in range(0, len(MainDeviceList)):
             status,result = sp.getstatusoutput("ping -c1 -w2 " + MainDeviceList[count][2])
             if status == 0:
-                MainDeviceList[count][3] == "ONLINE"
+                MainDeviceList[count][3].append("ONLINE")
             else:
-                MainDeviceList[count][3] == "OFFLINE"
+                MainDeviceList[count][3].append("OFFLINE")
         print(MainDeviceList)
 
     def PrintDeviceStatus(self):
