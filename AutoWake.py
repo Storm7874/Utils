@@ -78,7 +78,7 @@ class Main:
                 MainDeviceList[count].insert(3,"ONLINE")
             else:
                 MainDeviceList[count].insert(3,"OFFLINE")
-        print(MainDeviceList)
+        #print(MainDeviceList)
 
     def PrintDeviceStatus(self):
         self.ScanDevices()
