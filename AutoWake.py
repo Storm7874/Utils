@@ -68,6 +68,7 @@ class Main:
         for count in range(0, len(MainDeviceList)):
             os.system("etherwake " + MainDeviceList[count][1])
             print("Packet Sent to: {}".format(MainDeviceList[count][1]))
+        input()
         self.MainMenu()
 
     def ScanDevices(self):
