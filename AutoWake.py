@@ -39,7 +39,7 @@ class Timer:
         self.GetNewTime()
         self.CheckIfTimerActive()
 
-EFSS = Timer(6,23,"EFSS")
+EFSS = Timer(6, 23,"EFSS")
 SGPS = Timer(6, 23, "SGPS")
 
 MainDeviceList = [["EFSS","00:0C:76:4E:1A:D1","192.168.1.25","OFFLINE"],
@@ -96,21 +96,35 @@ class Main:
         input()
 
     def AutoMode(self):
+        SGPSStatus = False
+        EFSSStatus = False
         try:
             while True:
+                EFSS.TimerLoop()
+                SGPS.TimerLoop()
                 if EFSS.IsTimerActive() == True:
-                    os.system("etherwake " + MainDeviceList[0][1])
-                    Notify.Info("Started: {}".format(MainDeviceList[0][0]))
+                    if EFSSStatus == False:
+                        os.system("etherwake " + MainDeviceList[0][1])
+                        Notify.Info("Started: {}".format(MainDeviceList[0][0]))
+                    else:
+                        Notify.Info("EFSS Online.")
+                    EFSSStatus = True
                 else:
-                    Notify.Info("EFSS Timer Expired.")
+                    EFSSStatus = False
+
                 if SGPS.IsTimerActive() == True:
-                    os.system("etherwake " + MainDeviceList[1][1])
-                    Notify.Info("Started: {}".format(MainDeviceList[1][0]))
+                    if SGPSStatus == False:
+                        os.system("etherwake " + MainDeviceList[1][1])
+                        Notify.Info("Started: {}".format(MainDeviceList[1][0]))
+                    else:
+                        Notify.Info("SGPS Online.")
+                    SGPSStatus = True
                 else:
-                    Notify.Info("SGPS Timer Expired.")
-                time.sleep(10)
+                    SGPSStatus = False
+                time.sleep(5)
         except(KeyboardInterrupt):
             self.MainMenu()
+
 
 
     def MainMenu(self):
