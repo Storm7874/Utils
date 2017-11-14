@@ -2,6 +2,8 @@ import os
 import time
 import platform
 import socket
+import subprocess
+import datetime
 try:
     from Notify import Main
     Notify = Main()
@@ -88,6 +90,56 @@ class Main():
             socket.gethostbyname(socket.gethostname())
         else:
             socket.gethostbyname(socket.gethostname())
+
+class Networking():
+    def __init__(self):
+        self.Verbosity = 0
+
+    def PingDevice(self, deviceIP):
+        if self.Verbosity == 1:
+            Notify.Info("Scanning: {}".format(deviceIP))
+        status,result = subprocess.getstatusoutput("ping -c1 -w2 " + deviceIP)
+        if status == 0:
+            if self.Verbosity == 1:
+                Notify.Info("Device Online.")
+            return True
+        else:
+            if self.Verbosity == 1:
+                Notify.Info("Device Offline.")
+            return False
+
+    def SendWOL(self, deviceMAC):
+        if self.Verbosity == 1:
+            Notify.Info("Sending packet, Destination: {}".format(deviceMAC))
+        os.system("etherwake " + deviceMAC)
+
+class Timing():
+    def __init__(self, StartTime, EndTime):
+        self.StartTime = 0
+        self.EndTime = 0
+        self.Active = False
+        self.CurrentHour = 0
+
+    def GetNewTime(self):
+        self.CurrentHour = datetime.datetime.today().hour
+        self.CurrentHour = int(self.CurrentHour)
+
+    def CheckIfTimerActive(self):
+        if self.CurrentHour >= self.StartTime:
+            if self.CurrentHour < self.EndTime:
+                self.Active = True
+        else:
+            self.Active = False
+
+    def IsTimerActive(self):
+        if self.Active == True:
+            return True
+        else:
+            return False
+
+    def TimerLoop(self):
+        self.GetNewTime()
+        self.CheckIfTimerActive()
 
 
 
